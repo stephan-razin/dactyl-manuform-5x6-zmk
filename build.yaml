@@ -1,21 +1,48 @@
-# This file generates the GitHub Actions matrix
-# For simple board + shield combinations, add them
-# to the top level board and shield arrays, for more
-# control, add individual board + shield combinations to
-# the `include` property, e.g:
-#
-# board: [ "nice_nano_v2" ]
-# shield: [ "corne_left", "corne_right" ]
-# include:
-#   - board: bdn9_rev2
-#   - board: nice_nano_v2
-#     shield: reviung41
-#
----
-include:
-  - board: nice_nano_v2
-    shield: dactyl_manuform_5x6_left
-  - board: nice_nano_v2
-    shield: dactyl_manuform_5x6_right
-  - board: nice_nano_v2
-    shield: settings_reset
+name: Build Dactyl 6x6
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build_left:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup ZMK
+        uses: zmkfirmware/setup-zmk@main
+
+      - name: Build Left (Studio)
+        run: |
+          west build -d build/left -b nice_nano_v2 \
+            -- -DSHIELD=dactyl_ergo_6x6_left -DCONFIG_ZMK_STUDIO=y
+
+      - name: Upload Left Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: dactyl-left-studio
+          path: build/left/zephyr/zmk.uf2
+
+  build_right:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup ZMK
+        uses: zmkfirmware/setup-zmk@main
+
+      - name: Build Right
+        run: |
+          west build -d build/right -b nice_nano_v2 \
+            -- -DSHIELD=dactyl_ergo_6x6_right
+
+      - name: Upload Right Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: dactyl-right
+          path: build/right/zephyr/zmk.uf2

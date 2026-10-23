@@ -1,0 +1,41 @@
+&gpio0 {
+	status = "okay";
+};
+
+/ {
+	zmk_shield {
+		compatible = "zmk,shield";
+		label = "Dactyl Ergo 6x6 Right";
+
+		matrix {
+			compatible = "zmk,matrix-cols-rows";
+			cols = <6>;
+			rows = <6>;
+
+			col-gpios = <
+				GPIO_DT_SPEC_GET(D0, gpios)
+				GPIO_DT_SPEC_GET(D1, gpios)
+				GPIO_DT_SPEC_GET(D2, gpios)
+				GPIO_DT_SPEC_GET(D3, gpios)
+				GPIO_DT_SPEC_GET(D4, gpios)
+				GPIO_DT_SPEC_GET(D5, gpios)
+			>;
+
+			row-gpios = <
+				GPIO_DT_SPEC_GET(A0, gpios)
+				GPIO_DT_SPEC_GET(A1, gpios)
+				GPIO_DT_SPEC_GET(A2, gpios)
+				GPIO_DT_SPEC_GET(A3, gpios)
+				GPIO_DT_SPEC_GET(A4, gpios)
+				GPIO_DT_SPEC_GET(A5, gpios)
+			>;
+
+			diode-direction = "col2row";
+			debounce-ms = <5>;
+		};
+
+		split-peripheral {
+			compatible = "zmk,split-peripheral";
+		};
+	};
+};
